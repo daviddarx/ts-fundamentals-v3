@@ -93,4 +93,64 @@ let myCar2: [number, string, string] = [        // typing
   "Corolla",
 ]
 
-myCar2 = ["Honda", 2017, "Accord"];
+myCar2 = ["Honda", 2017, "Accord"];            // throwing error 
+
+
+
+
+// UNION & INTERSECTION TYPES    // OR & AND
+
+// UNION = OR = everything in X groups, groups don't have to have intersections 
+// INTERSECTION = AND = only the things in the middle of the groups, intersecting
+
+function flipCoin(): "heads" | "tails" {       // UNION typing, 2 separated value
+  if (Math.random() > 0.5) return "heads"
+  return "tails"
+}
+
+function maybeGetUserInfo():                            // UNION typing with OR and TUPPLES
+  | ["error", Error]
+  | ["success", { name: string; email: string }] {
+  if (flipCoin() === "heads") {
+    return [
+      "success",
+      { name: "Mike North", email: "mike@example.com" },    // user object
+    ]
+  } else {
+    return [
+      "error",
+      new Error("The coin landed on TAILS"),                // error object  
+    ]
+  }
+}
+
+const outcome = maybeGetUserInfo()                    // we know, the secon element of the tupple is depending of the string in first element
+
+const [first, second] = outcome 
+console.log(first);                                   // types set for the both dynmic declarated js variables                      
+console.log(second.name);                             // only second.name valid, as it is the only key available for  user and error 
+console.log(second.email);                            // email only for user, not for error -> not valid
+
+if (first == "success") console.log(second.email);    // wont work neither, cause only checking on runtime, not on compile time
+
+
+
+
+// NARROW WITH TYPEGUARDS                             // narrow = restreindre
+
+if (second instanceof Error) {                        
+  console.log(second);                                // error 
+} else {
+  console.log(second.email);                          // user:  wokring, now it's sure it's a user 
+}
+
+
+
+
+// DISCRIMINITED UNIONS 
+
+if (outcome[0] === "error") {                        // here understand TS that if the first one is error, we 100% know what is in the second tupple element 
+  console.log(outcome);                              // this work, because not separated in 2 variables which could be 2 differents things (second = error or user). 
+} else {                                             // there is one scenario, and another scenario 
+  console.log(outcome[1].email);
+} 
