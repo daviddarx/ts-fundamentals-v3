@@ -1,6 +1,6 @@
 export type UserContactInfo = {                             // ALIAS naming convention ThatIsMyType
-    name: string;
-    email: string;
+    name: string,
+    email: string
 };
 
 
@@ -20,6 +20,6 @@ export type SpecialDate = Date & { getReason(): string }   // ALIAS combining IN
 
 
 export interface UserInfo {                                 // Interface                      
-    name: string
+    name: string,
     email: string
 }

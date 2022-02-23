@@ -276,3 +276,153 @@ type JSONPrimitive = string | number | boolean | null           // basic json va
 type JSONObject = { [k: string]: JSONValue }                    // index signature: object with string that are asigned to values
 type JSONArray = JSONValue[]                                    // arrays
 type JSONValue = JSONArray | JSONObject | JSONPrimitive         // final, allowing each json value 
+
+
+
+
+// CALLABLE TYPES
+// we already saw argument & return types 
+// callable types = interface that describe functions or classes, which can be created with new()
+
+interface TwoNumberCalculation {                                // callable type with interface
+    (x: number, y: number): number
+}
+
+type TwoNumberCalc = (x: number, y: number) => number           // callable type with alias
+
+const add: TwoNumberCalculation = (a, b) => a + b               // do not need to type the argument anymore
+
+const subtract: TwoNumberCalc = (x, y) => x - y                 // do not need to type the argument anymore
+
+
+
+
+// VOID TYPE                                                    // void should only appear as a function return type
+
+function printFormattedJSON(obj: string[]) {
+    console.log(JSON.stringify(obj, null, "  "))
+}  
+
+const x = printFormattedJSON(["hello", "world"])               // a function which doesn't return anything will return void 
+       
+
+function invokeInFourSeconds(callback: () => undefined) {
+    setTimeout(callback, 4000)
+}
+function invokeInFiveSeconds(callback: () => void) {
+    setTimeout(callback, 5000)
+}
+
+const values: number[] = []
+
+invokeInFourSeconds(() => values.push(4))                       // the first function force the callback to return undefined
+invokeInFiveSeconds(() => values.push(4))                       // the second function is ok with returning nothing 
+
+
+
+
+// FUNCTIONS OVERLOAD SIGNATURE
+
+type FormSubmitHandler = (data: FormData) => void
+type MessageHandler = (evt: MessageEvent) => void
+
+function handleMainEvent(                                       // Overload signature
+  elem: HTMLFormElement,
+  handler: FormSubmitHandler
+)   // here without {}
+
+function handleMainEvent(                                       // Overload signature
+  elem: HTMLIFrameElement,
+  handler: MessageHandler
+) // here without {}
+
+function handleMainEvent(
+  elem: HTMLFormElement | HTMLIFrameElement,
+  handler: FormSubmitHandler | MessageHandler
+) {} // here with {}, the real function declaration. And it will know that if HTMLFormElement, then the second will be FormSubmitHandler
+
+const myFrame = document.getElementsByTagName("iframe")[0]
+        
+const myForm = document.getElementsByTagName("form")[0]
+        
+handleMainEvent(myFrame, (val) => {    
+})
+handleMainEvent(myForm, (val) => {      
+})
+
+
+
+
+// THIS TYPE 
+
+function myClickHandler(event: Event) {
+    this.disabled = true;   // this should throw an error, but doesn't right now. Check live examples https://www.typescript-training.com/course/fundamentals-v3/09-functions/
+}
+
+function myClickHandler2(this: HTMLButtonElement, event: Event) {
+    this.disabled = true            
+}
+
+
+
+
+
+// CLASSES 
+
+class Car {
+    make: string                                                    // Actionscript OOP Nostalgy :')
+    model: string
+    year: number
+
+    constructor(make: string, model: string, year: number) {
+        this.make = make
+        this.model = model            
+        this.year = year
+    }
+}
+  
+let sedan = new Car("Honda", "Accord", 2017);
+    sedan.activateTurnSignal("left") // not safe!
+
+new Car(2017, "Honda", "Accord") // not safe!
+
+
+// ACCESS MODIFIER KEYWORDS                 // control visiblity of methods and class fields
+
+// public       =       everyone (this is the default)
+// protected    =       the instance itself, and subclasses
+// private      =       only the instance itself
+// readonly     =       equivalent of const
+
+class Car2 {
+    public make: string
+    public model: string
+    public readonly year: number
+
+    protected vinNumber = generateVinNumber()
+
+    private doorLockCode = generateDoorLockCode()
+  
+    constructor(make: string, model: string, year: number) {
+      this.make = make
+      this.model = model
+      this.year = year
+    }
+  
+    protected unlockAllDoors() {
+      
+    }
+  }
+
+  // PARAMS PROPERTIES 
+
+  class Car3 {
+    constructor(
+      public make: string,
+      public model: string,
+      public year: number
+    ) {}
+  }
+  
+  const myCar4 = new Car("Honda", "Accord", 2017)
+  console.log(myCar4.model)
