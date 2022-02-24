@@ -134,7 +134,7 @@ console.log(second.email);                            // email only for user, no
 if (first == "success") console.log(second.email);    // wont work neither, cause only checking on runtime, not on compile time
 
 
-// NARROW WITH TYPEGUARDS                             // narrow = restreindre
+// NARROW WITH TYPEGUARDS                             // narrow = restreindre -> typeof, instanceof
 
 if (second instanceof Error) {                        
   console.log(second);                                // error 
@@ -412,17 +412,59 @@ class Car2 {
     protected unlockAllDoors() {
       
     }
-  }
+}
 
-  // PARAMS PROPERTIES 
+// PARAMS PROPERTIES 
 
-  class Car3 {
+class Car3 {
     constructor(
-      public make: string,
-      public model: string,
-      public year: number
+        public make: string,
+        public model: string,
+        public year: number
     ) {}
-  }
-  
-  const myCar4 = new Car("Honda", "Accord", 2017)
-  console.log(myCar4.model)
+}
+
+const myCar4 = new Car("Honda", "Accord", 2017)
+console.log(myCar4.model)
+
+
+
+// TOP TYPES:  ANY & UNKNOWN 
+
+let flexible: any = 14                                          // any can be anything, and is dangerous, because it will never throw a warning
+flexible.it.is.possible.to.access.any.deep.property
+         
+
+let flexible2: unknown = 4                                      // unknow is like any, it can be anything, but it will force you to narrow type guard before being able to do something with it. 
+flexible2 = "Download some more ram"
+flexible2 = window.document
+flexible2 = setTimeout
+
+flexible2.it.is.possible.to.access.any.deep.property 
+
+if (typeof flexible2 === "string") {
+
+    // This code runs for { myUnknown| all strings }
+    console.log(flexible2, "is a string")
+
+} else if (typeof flexible2 === "number") {
+    // This code runs for { myUnknown| all numbers }
+    console.log(flexible2, "is a number")
+
+} else {
+    // this would run for "the leftovers"
+}
+
+
+
+// BOTTOM TYPES: NEVER
+
+
+
+
+// NULLISH VALUES:  NONE, UNDEFINED & VOID 
+
+
+// null         =       no value (prefers to undefined in these cases)
+// undefined    =       not defined yet
+// void         =       only for return of function which should be ignored  
